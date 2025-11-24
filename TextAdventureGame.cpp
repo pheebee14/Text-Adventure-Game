@@ -5,6 +5,9 @@
 //hour 5: reflect on todays code and think of any way to optimize/speed this up.
 //SAVE FOR HOUR 4 DEBUGGING SESSION DEBUGGGGGG!!
 
+void peasant_initialise_route();
+void peasant_left_forest_route();
+
 namespace character_selection {
     std::string race_type;
     std::string status_type;
@@ -15,6 +18,11 @@ namespace choices {
     int significantchoice;
     char extraordinarychoice;
     char endingchoice;
+    std::string typechoice;
+}
+
+namespace helpers {
+    bool hasprincess = false;
 }
 
 namespace player_stats {
@@ -26,6 +34,7 @@ namespace player_stats {
     double money = 0;
     int dmg = 0;
     int defense = 0;
+    std::string clothing = "You are naked.";
 }
 
 void load_stats(){
@@ -39,6 +48,7 @@ void load_stats(){
     std::cout << "MONEY: " << money << std::endl;
     std::cout << "DAMAGE: " << dmg << std::endl;
     std::cout << "DEFENSE: " << defense << std::endl;
+    std::cout << "CLOTHING? " << clothing << std::endl;
     std::cout << "*******************************" << std::endl;
 }
 
@@ -116,27 +126,6 @@ std::string status_routes(std::string status_type) {
     return status_type;
 }
 
-void peasant_gameplay() {
-    using namespace character_selection;
-    using namespace choices;
-
-    std::cout << "You get up from the haystack. Looking around, you see nothing but a forest in front, and the surrounding area are wheat fields." << std::endl;
-    std::cout << "----------------------------------------------------------------------------------------------" << std::endl;
-    std::cout << "Go to the forest (1): " << std::endl;
-    std::cout << "Explore the wheat fields (2): " << std::endl;
-    std::cout << "A magic mirror is next to you, check yourself out? (3): " << std::endl;
-    std::cout << "What do you do? ";
-    std::cin >> significantchoice;
-
-    switch (significantchoice){
-        case 1: std::cout << "You head to the entrance of the forest. The forest splits, left or right? (l/r): " << std::endl; break;
-        case 2: std::cout << "You explore through the tall wheat fields for a while, until you find a barn house. Barn house or keep going? (b/g): " << std::endl; break;
-        case 3: load_stats(); break;
-        default: "1 2 OR 3!!"; break;
-
-    }
-}
-
 int main() {
     std::cout << "Welcome to Pheeb's fantasy RPG game!" << std::endl;
     using namespace character_selection;
@@ -152,9 +141,87 @@ int main() {
     std::string status_enroute = status_routes(status_type);
 
     if (status_enroute == "peasant"){
-        peasant_gameplay();
+        peasant_initialise_route();
     }
 
     return 0;
 
+}
+
+void peasant_initialise_route() {
+    using namespace character_selection;
+    using namespace choices;
+
+    std::cout << "You get up from the haystack. Looking around, you see nothing but a forest in front, and the surrounding area are wheat fields." << std::endl;
+    std::cout << "----------------------------------------------------------------------------------------------" << std::endl;
+    std::cout << "Go to the forest (1): " << std::endl;
+    std::cout << "Explore the wheat fields (2): " << std::endl;
+    std::cout << "A magic mirror is next to you, check yourself out? (3): " << std::endl;
+    std::cout << "What do you do? ";
+    std::cin >> significantchoice;
+
+    switch (significantchoice){
+        case 1:
+            std::cout << "You head to the entrance of the forest. The forest splits, left or right? (l/r) (lowercase): ";
+            std::cin >> extraordinarychoice;
+            switch (extraordinarychoice){
+                case 'l':
+                    std::cout << "-----------------------" << std::endl;
+                    std::cout << "LEFT ROUTE - FOREST" << '\n' << std::endl;
+                    peasant_left_forest_route();
+                    break;
+            }
+            break;
+
+        case 2: std::cout << "You explore through the tall wheat fields for a while, until you find a barn house. Barn house or keep going? (b/g) (lowercase): " << std::endl; break;
+        case 3: load_stats(); break;
+        default: "1 2 OR 3!!"; break;
+
+    }
+    
+}
+
+void peasant_left_forest_route() {
+    using namespace choices;
+    using namespace helpers;
+    std::cout << "You take the left route in the forest, walking along the path, until you see an injured princess bleeding, laying against a tree stump." << std::endl;
+    std::cout << "Do you save her, or keep walking forward? (s/w) (lowercase): ";
+    std::cin >> extraordinarychoice;
+
+    switch (extraordinarychoice){
+        case 's':
+            hasprincess = true;
+            std::cout << "You move to the princess, scooping her up, continuing to walk along the path." << std::endl; break;
+        case 'w':
+            std::cout << "You continue to walk along the path, leaving the princess to fend for herself against the tree stump." << std::endl; break;
+    }
+
+    std::cout << "As you continue to walk along trail on the left forest path, you discover a group of knights blocking your pathway. Together they speak in unison:" << std::endl;
+    if (hasprincess == true){
+        std::cout << "Lowly peasant. What are you doing with the princess?! Put her down this instant!" << std::endl;
+    }
+    else {
+        std::cout << "Lowly peasant. Have you seen the princess in any moment of your pathetic day? (y/n) (lowercase): ";
+        std::cin >> extraordinarychoice;
+        switch (extraordinarychoice) {
+            case 'y':
+                std::cout << "Where is she?! Tell us now! (She's up your ***/She's in the forest somewhere!): ";
+                std::cin >> typechoice;
+                break;
+            case 'n':
+                std::cout << "Then don't let us waste anymore time! Begone peasant! " << std::endl; break;
+        }
+    }
+
+    if (typechoice == "She's up your ***"){
+        std::cout << "HOW DARE YOU SPEAK SUCH INSOLENCE?! KILL HIM NOW!" << std::endl;
+        std::cout << "-------------------------------------------------" << std::endl;
+        std::cout << "YOU - DIED" << std::endl;
+    }
+    else if (typechoice == "She's in the forest somewhere!"){
+        std::cout << "Well no crap peasant! You're too dumb! We're not wasting our time on you!" << std::endl;
+        std::cout << "The group of knights walk away from you." << std::endl;
+    }
+
+    std::cout << "You negotiate with the group of knight's, and they agree to accompany you to the kingdom castle." << std::endl;
 }
